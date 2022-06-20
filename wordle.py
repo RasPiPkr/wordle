@@ -41,7 +41,6 @@ def key_pressed(event):
                         check_word(guess)
                         guess = ''
                     else:
-                        print(guess.lower())
                         letter_count -= 5
                         go_again()
                         guess = ''
@@ -103,7 +102,7 @@ def layout():
     winner = False
     guess = ''
     word = random.choice(words).upper()
-    print(word)
+    #print(word)
     for row in range(6):
         for col in range(5):
             btn = tk.Button(frame, text=' ', width=1, bg='white',
