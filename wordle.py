@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+from tkinter import messagebox
 import tkinter as tk
 import random
 
@@ -29,13 +31,42 @@ def key_pressed(event):
     global letter_count, guess
     if not winner:
         if event.char >= 'a' and event.char <= 'z' or event.char >= 'A' and event.char <= 'Z':
-            letters[letter_count]['text'] = event.char.upper()
-            letters[letter_count].focus()
-            guess = guess + event.char.upper()
-            letter_count += 1
-            if letter_count % 5 == 0:
-                check_word(guess)
-                guess = ''
+            if letter_count <= 29:
+                letters[letter_count]['text'] = event.char.upper()
+                letters[letter_count].focus()
+                guess = guess + event.char.upper()
+                letter_count += 1
+                if letter_count % 5 == 0:
+                    if guess.lower() in words:
+                        check_word(guess)
+                        guess = ''
+                    else:
+                        print(guess.lower())
+                        letter_count -= 5
+                        go_again()
+                        guess = ''
+            if letter_count == 30:
+                win_lose(winner)
+
+
+def win_lose(winner):
+    if not winner:
+        title = 'You Lose'
+        message = f'The word was {word}'
+    else:
+        title = 'You Win'
+        message = 'Well done, you got it in {} guess(s)'.format(int(letter_count / 5))
+    play_again = messagebox.askquestion(title=title, message=f'{message}.\nWould you like to play again?')
+    if play_again == 'yes':
+        layout()
+    else:
+        root.destroy()
+        quit()
+
+
+def go_again():
+    for i in range(5):
+        letters[letter_count + i]['text'] = ' '
 
 
 # check word
@@ -58,6 +89,7 @@ def check_word(guess):
             letters[btn_index + i]['activebackground'] = gray
     if guess == word:
         winner = True
+        win_lose(winner)
 
 
 # layout
@@ -71,6 +103,7 @@ def layout():
     winner = False
     guess = ''
     word = random.choice(words).upper()
+    print(word)
     for row in range(6):
         for col in range(5):
             btn = tk.Button(frame, text=' ', width=1, bg='white',
